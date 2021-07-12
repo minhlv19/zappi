@@ -1,0 +1,75 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+desc "Build and push a new internal test build to the Play Store"
+lane :android_internal do
+  ibn()
+  build_params = {
+    build_task: "bundle",
+  }
+  build(build_params)
+  supply_params = {
+    track: "internal",
+    skip_upload_apk: true,
+    skip_upload_metadata:true,
+    skip_upload_images:true,
+    skip_upload_screenshots:true,
+    skip_upload_changelogs:true,
+    aab: './android/app/build/outputs/bundle/release/app-release.aab',
+    # defaults to completed
+    release_status: "draft",
+  }
+  #supply(supply_params)
+end
+
+desc "Build a version of the app"
+lane :build do |options|
+  build_task = options.fetch(:build_task, "assemble")
+  build_type = options.fetch(:build_type, "Release")
+
+  gradle_params = {
+    task: build_task,
+    project_dir: 
+      "./android/",
+    build_type: build_type,
+  }
+  gradle(gradle_params)
+end
+
+desc "Increment build number and push to repository - Build number in this case is the android version code"
+lane :ibn do |options|
+  #git_commit(path: ".", message: "clean fastlane cycle commits before proceeding further [GITHUB_ACTION]")
+  #should_commit = options.fetch(:should_commit, true)
+  #commit_message = options.fetch(:commit_message, "android: bump build number (version code) [skip ci] [GITHUB_ACTION]")
+  #should_push = options.fetch(:should_push, true)
+
+  #ensure_git_status_clean if should_commit
+
+  params = {
+    :app_project_dir => './android/app'
+  }
+  if options[:build_number]
+    params[:version_code] = options[:build_number].to_i
+  end
+
+  android_increment_version_code(params)
+  new_version_code = Actions.lane_context[Actions::SharedValues::ANDROID_VERSION_CODE]
+  UI.important("Incremented android version code to #{new_version_code}")
+
+  #if should_commit
+    #path = "android/app/build.gradle"
+    #git_add(path: path)
+    #git_commit(path: path, message: commit_message)
+    # Push the new commit and tag back to your git remote
+    #push_to_git_remote if should_push
+  #end
+end

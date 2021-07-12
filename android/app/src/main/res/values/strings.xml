@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Zaapi</string>
+    <string moduleConfig="true" name="CodePushDeploymentKey">De0X6sX1yfUMvpQRYm7AID-rMXLUSIDei70Mo</string>
+</resources>

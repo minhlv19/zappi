@@ -1,0 +1,12 @@
+app_identifier(ENV["com.delightree.development"]) # The bundle identifier of your app
+apple_id(ENV["div@delightree.com"]) # Your Apple email address
+
+itc_team_id(ENV["HN96V48C87"]) # App Store Connect Team ID
+team_id(ENV["HN96V48C87"]) # Developer Portal Team ID
+
+
+json_key_file("./android/play-store-credentials.json")
+package_name("com.zaapisellerapp")
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile
